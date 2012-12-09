@@ -41,6 +41,8 @@ class MODMovimiento extends MODbase{
 		$this->captura('usr_mod','varchar');
 		$this->captura('tipo_movimiento','varchar');
 		$this->captura('con_rendicion','varchar');
+		$this->captura('id_proyecto','int4');
+		$this->captura('nombre_proyecto','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -67,6 +69,7 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('detalle','detalle','text');
 		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('tipo_movimiento','tipo_movimiento','varchar');
+		$this->setParametro('id_proyecto','id_proyecto','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -93,6 +96,7 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('detalle','detalle','text');
 		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('tipo_movimiento','tipo_movimiento','varchar');
+		$this->setParametro('id_proyecto','id_proyecto','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

@@ -31,6 +31,27 @@ Phx.vista.Concepto=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true 
 		},
+		{   config:{
+				name:'tipo_movimiento',
+				fieldLabel:'Tipo Movimiento',
+				typeAhead: true,
+				allowBlank:false,
+	    		triggerAction: 'all',
+	    		forceSelection: true,
+	    		selectOnFocus:true,
+	   			mode:'local',
+				store:['ingreso','egreso'],
+				valueField:'ID',
+				gwidth:100,
+				width:'50%'	
+				
+			   },
+			type:'ComboBox',
+			id_grupo:1,
+			form:true,
+			grid:true,
+			valorInicial: 'egreso'
+		},
 		
 		{
 			config:{
@@ -138,6 +159,7 @@ Phx.vista.Concepto=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date', dateFormat:'Y-m-d H:i:s'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
+		{name:'tipo_movimiento', type: 'string'}
 		
 	],
 	sortInfo:{

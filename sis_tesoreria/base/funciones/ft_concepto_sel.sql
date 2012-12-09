@@ -1,11 +1,10 @@
-CREATE FUNCTION tesor.ft_concepto_sel (
+CREATE OR REPLACE FUNCTION tesor.ft_concepto_sel (
   p_administrador integer,
   p_id_usuario integer,
-  p_tabla character varying,
-  p_transaccion character varying
+  p_tabla varchar,
+  p_transaccion varchar
 )
-RETURNS varchar
-AS 
+RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:		Tesoreria
@@ -55,7 +54,8 @@ BEGIN
 						con.id_usuario_mod,
 						con.fecha_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        con.tipo_movimiento
 						from tesor.tconcepto con
 						inner join segu.tusuario usu1 on usu1.id_usuario = con.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = con.id_usuario_mod
@@ -111,4 +111,8 @@ EXCEPTION
 			raise exception '%',v_resp;
 END;
 $body$
-    LANGUAGE plpgsql;
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+COST 100;

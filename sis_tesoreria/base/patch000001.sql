@@ -53,4 +53,32 @@ CREATE TABLE tesor.tmovimiento (
     NOT DEFERRABLE
 ) INHERITS (pxp.tbase)
 WITH OIDS;
+
+ALTER TABLE tesor.tconcepto
+  ADD COLUMN tipo_movimiento VARCHAR(15) NOT NULL;
+  
+ALTER TABLE tesor.tmovimiento
+  ADD COLUMN id_proyecto INTEGER NOT NULL;
+  
+ALTER TABLE tesor.tmovimiento
+  ADD CONSTRAINT tmovimiento_fk_id_proyecto FOREIGN KEY (id_proyecto)
+    REFERENCES segu.tproyecto(id_proyecto)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE
+    NOT DEFERRABLE;
+
+INSERT INTO segu.tsubsistema ("codigo", "nombre", "fecha_reg", "prefijo", "estado_reg", "nombre_carpeta", "id_subsis_orig")
+VALUES (E'TESOR', E'Sistema de Tesoreria', E'2012-12-07', E'TSR', E'activo', E'tesoreria', NULL);
+  
+select pxp.f_insert_tgui ('SISTEMA DE TESORERIA', '', 'TESOR', 'si',NULL , '', 1, '', '', 'TESOR');
+select pxp.f_insert_tgui ('Conceptos', 'Conceptos', 'CONC', 'si', 1, 'sis_tesoreria/vista/concepto/Concepto.php', 2, '', 'Concepto', 'TESOR');
+select pxp.f_insert_tgui ('Movimiento', 'Movimiento', 'MOV', 'si', 2, 'sis_tesoreria/vista/movimiento/Movimiento.php', 2, '', 'Movimiento', 'TESOR');
+select pxp.f_insert_tgui ('Factura', 'Factura', 'FAC', 'si', 3, 'sis_tesoreria/vista/factura/Factura.php', 2, '', 'Factura', 'TESOR');
+select pxp.f_insert_testructura_gui ('TESOR', 'SISTEMA');
+select pxp.f_insert_testructura_gui ('CONC', 'TESOR');
+select pxp.f_insert_testructura_gui ('MOV', 'TESOR');
+select pxp.f_insert_testructura_gui ('FAC', 'TESOR');
+
+
+
 /***********************************F-SCP-JRR-TESOR-1-7/12/2012****************************************/

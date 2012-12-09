@@ -1,11 +1,10 @@
-CREATE FUNCTION tesor.ft_movimiento_ime (
+CREATE OR REPLACE FUNCTION tesor.ft_movimiento_ime (
   p_administrador integer,
   p_id_usuario integer,
-  p_tabla character varying,
-  p_transaccion character varying
+  p_tabla varchar,
+  p_transaccion varchar
 )
-RETURNS varchar
-AS 
+RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:		Tesoreria
@@ -61,7 +60,8 @@ BEGIN
 			fecha_reg,
 			id_usuario_mod,
 			fecha_mod,
-            tipo_movimiento
+            tipo_movimiento,
+            id_proyecto
           	) values(
 			'activo',
 			now(),
@@ -75,7 +75,8 @@ BEGIN
 			now(),
 			null,
 			null,
-            v_parametros.tipo_movimiento
+            v_parametros.tipo_movimiento,
+            v_parametros.id_proyecto
 			)RETURNING id_movimiento into v_id_movimiento;
                
 			--Definicion de la respuesta
@@ -107,7 +108,8 @@ BEGIN
 			detalle = v_parametros.detalle,
 			id_usuario_mod = p_id_usuario,
             tipo_movimiento = v_parametros.tipo_movimiento,
-			fecha_mod = now()
+			fecha_mod = now(),
+            id_proyecto = v_parametros.id_proyecto
 			where id_movimiento=v_parametros.id_movimiento;
                
 			--Definicion de la respuesta
@@ -160,4 +162,8 @@ EXCEPTION
 				        
 END;
 $body$
-    LANGUAGE plpgsql;
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+COST 100;

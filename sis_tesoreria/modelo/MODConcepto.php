@@ -30,6 +30,7 @@ class MODConcepto extends MODbase{
 		$this->captura('fecha_mod','timestamp');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+		$this->captura('tipo_movimiento','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -49,6 +50,7 @@ class MODConcepto extends MODbase{
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('descripcion','descripcion','text');
+		$this->setParametro('tipo_movimiento','tipo_movimiento','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -69,6 +71,7 @@ class MODConcepto extends MODbase{
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('descripcion','descripcion','text');
+		$this->setParametro('tipo_movimiento','tipo_movimiento','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

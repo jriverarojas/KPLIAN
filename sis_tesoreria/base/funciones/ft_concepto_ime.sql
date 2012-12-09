@@ -1,11 +1,10 @@
-CREATE FUNCTION tesor.ft_concepto_ime (
+CREATE OR REPLACE FUNCTION tesor.ft_concepto_ime (
   p_administrador integer,
   p_id_usuario integer,
-  p_tabla character varying,
-  p_transaccion character varying
+  p_tabla varchar,
+  p_transaccion varchar
 )
-RETURNS varchar
-AS 
+RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:		Tesoreria
@@ -55,7 +54,8 @@ BEGIN
 			fecha_reg,
 			id_usuario_reg,
 			id_usuario_mod,
-			fecha_mod
+			fecha_mod,
+            tipo_movimiento
           	) values(
 			'activo',
 			v_parametros.nombre,
@@ -63,7 +63,8 @@ BEGIN
 			now(),
 			p_id_usuario,
 			null,
-			null
+			null,
+            v_parametros.tipo_movimiento
 			)RETURNING id_concepto into v_id_concepto;
                
 			--Definicion de la respuesta
@@ -90,7 +91,8 @@ BEGIN
 			nombre = v_parametros.nombre,
 			descripcion = v_parametros.descripcion,
 			id_usuario_mod = p_id_usuario,
-			fecha_mod = now()
+			fecha_mod = now(),
+            tipo_movimiento = v_parametros.tipo_movimiento
 			where id_concepto=v_parametros.id_concepto;
                
 			--Definicion de la respuesta
@@ -142,4 +144,8 @@ EXCEPTION
 				        
 END;
 $body$
-    LANGUAGE plpgsql;
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+COST 100;

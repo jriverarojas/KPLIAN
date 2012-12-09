@@ -1,11 +1,10 @@
-CREATE FUNCTION tesor.ft_movimiento_sel (
+CREATE OR REPLACE FUNCTION tesor.ft_movimiento_sel (
   p_administrador integer,
   p_id_usuario integer,
-  p_tabla character varying,
-  p_transaccion character varying
+  p_tabla varchar,
+  p_transaccion varchar
 )
-RETURNS varchar
-AS 
+RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:		Tesoreria
@@ -66,13 +65,16 @@ BEGIN
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
                         mov.tipo_movimiento,
-                        mov.con_rendicion
+                        mov.con_rendicion,
+                        mov.id_proyecto,
+                        proy.nombre
 						from tesor.tmovimiento mov
 						inner join segu.tusuario usu1 on usu1.id_usuario = mov.id_usuario_reg
                         inner join segu.vpersona por on mov.id_persona_or = por.id_persona
                         inner join segu.vpersona pdes on  mov.id_persona_des = pdes.id_persona
                         inner join tesor.tconcepto con on con.id_concepto = mov.id_concepto
 						left join segu.tusuario usu2 on usu2.id_usuario = mov.id_usuario_mod
+                        inner join segu.tproyecto proy on proy.id_proyecto = mov.id_proyecto
 				        where mov.estado_reg =''activo'' and ';
 			
 			--Definicion de la respuesta
@@ -102,6 +104,7 @@ BEGIN
                         inner join segu.vpersona pdes on  mov.id_persona_des = pdes.id_persona
                         inner join tesor.tconcepto con on con.id_concepto = mov.id_concepto
 						left join segu.tusuario usu2 on usu2.id_usuario = mov.id_usuario_mod
+                        inner join segu.tproyecto proy on proy.id_proyecto = mov.id_proyecto
 					    where ';
 			
 			--Definicion de la respuesta		    
@@ -128,4 +131,8 @@ EXCEPTION
 			raise exception '%',v_resp;
 END;
 $body$
-    LANGUAGE plpgsql;
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+COST 100;

@@ -16,6 +16,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
 		Phx.vista.Movimiento.superclass.constructor.call(this,config);
+		this.iniciarEventos();
 		this.init();
 		this.load({params:{start:0, limit:50}})
 	},
@@ -67,7 +68,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
 		
 		{
 			config:{
-				name: 'fecha',
+				name: 'fecha_mov',
 				fieldLabel: 'Fecha',
 				allowBlank: true,
 				anchor: '40%',
@@ -137,6 +138,55 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
    			grid:true,
    			form:true
 	    },
+	    {
+	       	config:{
+	       		name: 'id_proyecto',
+				fieldLabel: 'Proyecto',
+				allowBlank: false,
+				anchor: '70%',
+				gwidth:80,
+	       		store: new Ext.data.JsonStore({
+
+	    				url: '../../sis_seguridad/control/Proyecto/listarProyecto',
+	    				id: 'id_proyecto',
+	    				root: 'datos',
+	    				sortInfo:{
+	    					field: 'id_proyecto',
+	    					direction: 'ASC'
+	    				},
+	    				totalProperty: 'total',
+	    				fields: ['id_proyecto','nombre'],
+	    				// turn on remote sorting
+	    				remoteSort: true,
+	    				baseParams:{par_filtro:'proy.nombre#proy.codigo',estado_reg:'activo'}
+	    			}),
+	       		valueField: 'id_proyecto',
+	       		displayField: 'nombre',
+	       		gdisplayField: 'nombre_proyecto',
+	       		hiddenName: 'id_proyecto',
+	       		forceSelection:true,
+	       		typeAhead: false,
+	        	triggerAction: 'all',
+	        	lazyRender:true,
+	       		mode:'remote',
+	       		pageSize:20,
+	       		queryDelay:1000,
+	       		minChars:3,
+	       		turl:'../../../sis_seguridad/vista/proyecto/Proyecto.php',
+   			    ttitle:'Proyectos',
+   			   // tconfig:{width:1800,height:500},
+   			    tdata:{},
+   			    tcls:'Proyecto',
+	       		renderer:function(value, p, record){return String.format('{0}', record.data['nombre_proyecto']);}
+   			},
+   			type:'TrigguerCombo',
+   			id_grupo:0,
+   			filters:{   pfiltro:'proy.nombre',
+   						type:'string'
+   					},
+   			grid:true,
+   			form:true
+       	},
 		{
    			config:{
    				name:'id_concepto',
@@ -145,7 +195,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
    				emptyText:'Concepto...',
    				store: new Ext.data.JsonStore({
 
-					url: '../../sis_tesor/control/Concepto/ListarConcepto',
+					url: '../../sis_tesoreria/control/Concepto/ListarConcepto',
 					id: 'id_concepto',
 					root: 'datos',
 					sortInfo:{
@@ -173,7 +223,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
    				width:250,
    				gwidth:280,
    				minChars:2,
-   				turl:'../../../sis_tesor/vista/concepto/Concepto.php',
+   				turl:'../../../sis_tesoreria/vista/concepto/Concepto.php',
    			    ttitle:'Conceptos',
    			   // tconfig:{width:1800,height:500},
    			    tdata:{},
@@ -265,7 +315,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'con_rendicion',
-				fieldLabel: 'Con Rendición',
+				fieldLabel: 'Rendición Pendiente',
 				allowBlank: true,
 				anchor: '40%',
 				gwidth: 100,
@@ -373,7 +423,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
 		{name:'estado_reg', type: 'string'},
 		{name:'con_rendicion', type: 'string'},
 		{name:'nro_movimiento', type: 'numeric'},
-		{name:'fecha', type: 'date', dateFormat:'Y-m-d'},
+		{name:'fecha_mov', type: 'date', dateFormat:'Y-m-d'},
 		{name:'id_persona_des', type: 'numeric'},
 		{name:'desc_persona_des', type: 'string'},
 		{name:'id_concepto', type: 'numeric'},
@@ -389,15 +439,29 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date', dateFormat:'Y-m-d H:i:s'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
-		{name:'tipo_movimiento',type:'string'}
-		
+		{name:'tipo_movimiento',type:'string'},
+		{name:'id_proyecto', type: 'numeric'},
+		{name:'nombre_proyecto',type:'string'},
 	],
 	sortInfo:{
 		field: 'id_movimiento',
 		direction: 'DESC'
 	},
 	bdel:true,
-	bsave:true
+	bsave:true,
+	//estable el manejo de eventos del formulario
+	iniciarEventos:function(){
+		this.getComponente('tipo_movimiento').on('select',function(combo){
+			this.getComponente('id_concepto').store.setBaseParam( 'tipo_movimiento',  combo.getValue());
+		},this)
+	},
+	/*Sobre carga boton NEW */
+	onButtonNew:function(){
+		Phx.vista.Movimiento.superclass.onButtonNew.call(this);
+		
+		this.getComponente('tipo_movimiento').fireEvent('select', this.getComponente('tipo_movimiento'));
+		
+	}
 	}
 )
 </script>
